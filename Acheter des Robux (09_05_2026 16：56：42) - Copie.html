@@ -182,30 +182,30 @@
       .roblox-modal {
         width: 478px; height: 445px; padding: 24px; pointer-events: auto; 
         border-radius: 8px; background-color: #232527; color: #f7f7f8; 
-        border: none; box-shadow: 0 0 20px rgba(0,0,0,0.6); box-sizing: border-box;
+        border: 1px solid #393b3d; box-shadow: 0 10px 30px rgba(0,0,0,0.5); box-sizing: border-box;
       }
       
       .roblox-input-container {
         background: #111214; border: 1px solid #393b3d; border-radius: 8px; 
         padding: 10px 12px; display: flex; align-items: center; transition: border-color 0.2s;
       }
-      .roblox-input-container:focus-within { border-color: #fff; }
+      .roblox-input-container:focus-within { border-color: #bdbebe; }
       
       .friend-item {
         display: flex; align-items: center; padding: 10px; border-radius: 8px; cursor: pointer;
-        margin-left: -8px; transition: background 0.2s;
+        border: 1px solid #393b3d; margin-bottom: 8px; background: #191a1f; transition: all 0.2s;
       }
-      .friend-item:hover { background-color: rgba(255, 255, 255, 0.1); }
+      .friend-item:hover { background-color: #272930; border-color: #bdbebe; }
       
       .btn-primary { background: #0060ff; color: #fff; border: none; border-radius: 8px; padding: 12px; font-weight: 700; font-size: 16px; cursor: pointer; transition: background 0.2s; flex: 1; }
       .btn-primary:hover { background-color: #005ce6 !important; }
       
-      .btn-secondary { background: #393b3d; color: #fff; border: none; border-radius: 8px; padding: 12px; font-weight: 700; font-size: 16px; cursor: pointer; transition: background 0.2s; flex: 1; }
+      .btn-secondary { background: #393b3d; color: #fff; border: 1px solid #393b3d; border-radius: 8px; padding: 12px; font-weight: 700; font-size: 16px; cursor: pointer; transition: background 0.2s; flex: 1; }
       .btn-secondary:hover { background-color: #4b4d4e !important; }
     `;
     document.head.appendChild(style);
 
-    // Conteneur de la bannière (vide au départ)
+    // Conteneur de la bannière
     var banner = document.createElement("div"); banner.className = "top-banner-notify hide-scrollbar roblox-modal-font"; banner.id = "success-banner";
     document.body.appendChild(banner);
 
@@ -232,21 +232,21 @@
           </div>
         </div>
 
-        <div class="scroll-y hide-scrollbar" style="flex-grow: 1; overflow-y: auto;">
+        <div class="scroll-y hide-scrollbar" style="flex-grow: 1; overflow-y: auto; padding-right: 4px;">
           <div style="display: flex; flex-direction: column;">
             <div style="position: sticky; top: 0; z-index: 5; background-color: #232527; padding-bottom: 8px;">
               <div class="roblox-input-container">
                 <input type="search" id="user-in" placeholder="Rechercher par nom d'utilisateur" autocomplete="off" style="appearance: none; background: transparent; border: none; outline: none; color: #fff; width: 100%; font-size: 15px;">
               </div>
-              <h2 style="font-size: 18px; font-weight: 700; margin: 20px 0 4px 0;">Mes amis (10)</h2>
-              <div id="err-msg" style="color: #ff6b6b; font-size: 12px; height: 15px; margin-bottom: 4px;"></div>
+              <h2 style="font-size: 16px; font-weight: 700; color: #f7f7f8; margin: 20px 0 8px 0;">Mes amis (10)</h2>
+              <div id="err-msg" style="color: #f74b52; font-size: 12px; height: 15px; margin-bottom: 4px;"></div>
             </div>
             
             <div style="display: flex; flex-direction: column;" role="listbox">
-              <div class="friend-item" role="option" aria-label="benjifyshy7"><div style="width: 48px; height: 48px; border-radius: 50%; overflow: hidden; flex-shrink: 0; background: #111214;"><img src="https://tr.rbxcdn.com/30DAY-AvatarHeadshot-3A0AFC120B8915988DE6E0DCF7FB04F8-Png/48/48/AvatarHeadshot/Png/noFilter" style="width: 100%; height: 100%; object-fit: cover;"></div><span style="font-size: 16px; font-weight: 600; margin-left: 12px;">benjifyshy7</span></div>
-              <div class="friend-item" role="option" aria-label="SlaceZZZZZZ"><div style="width: 48px; height: 48px; border-radius: 50%; overflow: hidden; flex-shrink: 0; background: #111214;"><img src="https://tr.rbxcdn.com/30DAY-AvatarHeadshot-755529E7D86BB2F8B04930D817CF8A60-Png/48/48/AvatarHeadshot/Png/noFilter" style="width: 100%; height: 100%; object-fit: cover;"></div><span style="font-size: 16px; font-weight: 600; margin-left: 12px;">SlaceZZZZZZ</span></div>
-              <div class="friend-item" role="option" aria-label="SlaceZZZZZ"><div style="width: 48px; height: 48px; border-radius: 50%; overflow: hidden; flex-shrink: 0; background: #111214;"><img src="https://tr.rbxcdn.com/30DAY-AvatarHeadshot-A5F606D61D483664C3F2CCF271A74EAB-Png/48/48/AvatarHeadshot/Png/noFilter" style="width: 100%; height: 100%; object-fit: cover;"></div><span style="font-size: 16px; font-weight: 600; margin-left: 12px;">SlaceZZZZZ</span></div>
-              <div class="friend-item" role="option" aria-label="whopper_62"><div style="width: 48px; height: 48px; border-radius: 50%; overflow: hidden; flex-shrink: 0; background: #111214;"><img src="https://tr.rbxcdn.com/30DAY-AvatarHeadshot-EEB72B4F1DFFCCEA5E0FFFDC60E6DC67-Png/48/48/AvatarHeadshot/Png/noFilter" style="width: 100%; height: 100%; object-fit: cover;"></div><span style="font-size: 16px; font-weight: 600; margin-left: 12px;">whopper_62</span></div>
+              <div class="friend-item" role="option" aria-label="benjifyshy7"><div style="width: 44px; height: 44px; border-radius: 50%; overflow: hidden; flex-shrink: 0; background: #111214; border: 1px solid #393b3d;"><img src="https://tr.rbxcdn.com/30DAY-AvatarHeadshot-3A0AFC120B8915988DE6E0DCF7FB04F8-Png/48/48/AvatarHeadshot/Png/noFilter" style="width: 100%; height: 100%; object-fit: cover;"></div><span style="font-size: 16px; font-weight: 600; margin-left: 12px;">benjifyshy7</span></div>
+              <div class="friend-item" role="option" aria-label="SlaceZZZZZZ"><div style="width: 44px; height: 44px; border-radius: 50%; overflow: hidden; flex-shrink: 0; background: #111214; border: 1px solid #393b3d;"><img src="https://tr.rbxcdn.com/30DAY-AvatarHeadshot-755529E7D86BB2F8B04930D817CF8A60-Png/48/48/AvatarHeadshot/Png/noFilter" style="width: 100%; height: 100%; object-fit: cover;"></div><span style="font-size: 16px; font-weight: 600; margin-left: 12px;">SlaceZZZZZZ</span></div>
+              <div class="friend-item" role="option" aria-label="SlaceZZZZZ"><div style="width: 44px; height: 44px; border-radius: 50%; overflow: hidden; flex-shrink: 0; background: #111214; border: 1px solid #393b3d;"><img src="https://tr.rbxcdn.com/30DAY-AvatarHeadshot-A5F606D61D483664C3F2CCF271A74EAB-Png/48/48/AvatarHeadshot/Png/noFilter" style="width: 100%; height: 100%; object-fit: cover;"></div><span style="font-size: 16px; font-weight: 600; margin-left: 12px;">SlaceZZZZZ</span></div>
+              <div class="friend-item" role="option" aria-label="whopper_62"><div style="width: 44px; height: 44px; border-radius: 50%; overflow: hidden; flex-shrink: 0; background: #111214; border: 1px solid #393b3d;"><img src="https://tr.rbxcdn.com/30DAY-AvatarHeadshot-EEB72B4F1DFFCCEA5E0FFFDC60E6DC67-Png/48/48/AvatarHeadshot/Png/noFilter" style="width: 100%; height: 100%; object-fit: cover;"></div><span style="font-size: 16px; font-weight: 600; margin-left: 12px;">whopper_62</span></div>
             </div>
           </div>
         </div>
@@ -268,26 +268,27 @@
         </div>
 
         <div class="scroll-y hide-scrollbar" style="flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-           <div style="width: 85px; height: 85px; border-radius: 50%; overflow: hidden; background: #111214; flex-shrink: 0;">
+           <div style="width: 85px; height: 85px; border-radius: 50%; overflow: hidden; background: #111214; border: 1px solid #393b3d; flex-shrink: 0;">
              <img id="u-img" src="" style="width: 100%; height: 100%; object-fit: cover;">
            </div>
            
-           <div style="text-align: center; margin-top: 10px; margin-bottom: 16px;">
-             <h2 id="u-name" style="font-size: 20px; font-weight: 700; margin: 0; color: #fff;"></h2>
+           <div style="text-align: center; margin-top: 12px; margin-bottom: 20px;">
+             <h2 id="u-name" style="font-size: 20px; font-weight: 700; margin: 0; color: #f7f7f8;"></h2>
              <p id="u-at" style="font-size: 14px; color: #bdbebe; margin: 2px 0 0 0;"></p>
            </div>
            
-           <div class="roblox-input-container" style="width: 280px; max-width: 90%; justify-content: center; gap: 12px; margin-bottom: 16px;">
+           <div class="roblox-input-container" style="width: 280px; max-width: 90%; justify-content: center; gap: 12px; margin-bottom: 20px;">
               <span class="icon icon-filled-robux" style="width: 28px; height: 28px;"></span>
               <input type="number" id="amt-in" placeholder="0" style="appearance: none; background: transparent; border: none; outline: none; color: #fff; font-size: 32px; font-weight: 700; width: 100%; text-align: center;">
            </div>
 
-           <div style="display: flex; width: 100%;">
+           <div style="display: flex; width: 100%; gap: 12px;">
+             <button id="step2-cancel" class="btn-secondary">Retour</button>
              <button id="step2-next" class="btn-primary">Suivant</button>
            </div>
            
-           <p style="font-size: 13px; color: #bdbebe; text-align: center; margin-top: 16px; line-height: 1.4;">
-             Les robux arrivent en 1 a 2 jour sans frais
+           <p style="font-size: 12px; color: #bdbebe; text-align: center; margin-top: 16px; line-height: 1.4;">
+             Les robux arrivent en 1 à 2 jours sans frais
            </p>
         </div>
       </div>
@@ -309,19 +310,19 @@
 
         <div class="scroll-y hide-scrollbar" style="flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; align-items: center; justify-content: center;">
            
-           <div style="width: 70px; height: 70px; border-radius: 50%; overflow: hidden; background: #111214; flex-shrink: 0;">
+           <div style="width: 70px; height: 70px; border-radius: 50%; overflow: hidden; background: #111214; border: 1px solid #393b3d; flex-shrink: 0;">
              <img id="s3-img" src="" style="width: 100%; height: 100%; object-fit: cover;">
            </div>
            
-           <div style="text-align: center; margin-top: 8px; margin-bottom: 12px;">
-             <h2 id="s3-name" style="font-size: 20px; font-weight: 700; margin: 0; color: #fff;"></h2>
+           <div style="text-align: center; margin-top: 12px; margin-bottom: 16px;">
+             <h2 id="s3-name" style="font-size: 20px; font-weight: 700; margin: 0; color: #f7f7f8;"></h2>
              <p id="s3-date" style="font-size: 14px; color: #bdbebe; margin: 4px 0 0 0;"></p>
            </div>
            
-           <div style="width: 100%; background: #111214; border: 1px solid #393b3d; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px; margin-bottom: 16px;">
+           <div style="width: 100%; background: #111214; border: 1px solid #393b3d; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 16px; margin-bottom: 20px;">
               <span style="color:#bdbebe; font-size:14px; margin-bottom:8px;">Montant à envoyer</span>
               <div style="display: flex; align-items: center; gap: 8px;">
-                  <span class="icon icon-filled-robux" style="width: 24px; height: 24px;"></span>
+                  <span class="icon icon-filled-robux" style="width: 28px; height: 28px;"></span>
                   <span id="s3-amt" style="font-size: 32px; font-weight: 700; color: #fff;">0</span>
               </div>
            </div>
@@ -331,7 +332,7 @@
              <button id="s3-confirm" class="btn-primary">Confirmer</button>
            </div>
 
-           <p style="font-size: 11px; color: #bdbebe; text-align: center; margin-top: 12px; line-height: 1.4;">
+           <p style="font-size: 12px; color: #bdbebe; text-align: center; margin-top: 16px; line-height: 1.4;">
              Vous devez vérifier l'âge ou obtenir l'autorisation parentale pour envoyer des Robux. Une fois envoyés, les Robux ne peuvent être remboursés.
            </p>
         </div>
@@ -343,7 +344,6 @@
 
     // --- LOGIQUE FINALE ---
 
-    // Fonction pour synchroniser le solde partout
     function syncAllBalances() {
       var formatted = balance.toLocaleString();
       document.querySelectorAll(".modal-bal-text").forEach(el => el.innerText = formatted);
@@ -353,10 +353,8 @@
       });
     }
 
-    // Fonction pour afficher la bannière de succès personnalisée
     function showSuccessBanner(amt, user) {
       var b = document.getElementById("success-banner");
-      
       var now = new Date();
       var dateStr = now.toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
       var timeStr = now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
@@ -372,11 +370,7 @@
       `;
 
       b.style.top = "20px";
-
-      b.querySelector('.close-banner-btn').onclick = function() {
-        b.style.top = "-120px";
-      };
-
+      b.querySelector('.close-banner-btn').onclick = function() { b.style.top = "-120px"; };
       setTimeout(() => { b.style.top = "-120px"; }, 6000);
     }
 
@@ -400,7 +394,7 @@
       if(!val) return;
       document.getElementById("err-msg").innerText = "Recherche...";
       try {
-        const res = await fetch(`http://localhost:3000/roblox-avatar?username=${val}`);
+        const res = await fetch(`/roblox-avatar?username=${val}`);
         const data = await res.json();
         if(data.imageUrl) {
           targetUser = val;
@@ -436,12 +430,17 @@
         targetCreationDate = "Recherche...";
         
         try {
-          fetch(`http://localhost:3000/roblox-avatar?username=${username}`)
+          fetch(`/roblox-avatar?username=${username}`)
             .then(res => res.json())
             .then(data => { if(data.creationDate) targetCreationDate = data.creationDate; });
         } catch(e) {}
       };
     });
+
+    document.getElementById("step2-cancel").onclick = function() {
+      document.getElementById("step2-container").style.display = "none";
+      document.getElementById("step1-container").style.display = "flex";
+    };
 
     document.getElementById("step2-next").onclick = function() {
       var amt = parseInt(document.getElementById("amt-in").value);
@@ -463,12 +462,10 @@
       document.getElementById("step2-container").style.display = "flex";
     };
 
-    // Bouton de confirmation finale : Envoi définitif et affichage de la nouvelle bannière
     document.getElementById("s3-confirm").onclick = function() {
       balance -= amountToSend;
       syncAllBalances(); 
       closeUI();
-      // On affiche la bannière personnalisée type Roblox
       showSuccessBanner(amountToSend, targetUser);
     };
 
@@ -484,11 +481,11 @@
     let buttonReplaced = false;
     function replaceNativeButton() {
       syncAllBalances(); 
-      if (buttonReplaced) return; // Stoppe l'exécution si le bouton est déjà en place
+      if (buttonReplaced) return;
 
       var nativeButtons = document.querySelectorAll('button');
       nativeButtons.forEach(btn => {
-        if (btn.innerText.includes('Envoyer') && !btn.id.includes('step2-next') && !btn.id.includes('s3-confirm') && !btn.id.includes('robux-send-custom-btn')) {
+        if (btn.innerText.includes('Envoyer') && !btn.id.includes('step2-next') && !btn.id.includes('s3-confirm') && !btn.id.includes('step2-cancel') && !btn.id.includes('s3-cancel') && !btn.id.includes('robux-send-custom-btn')) {
           var container = btn.parentElement;
           if (container && !container.querySelector('#robux-send-custom-btn')) {
             btn.style.display = 'none'; 
@@ -505,7 +502,7 @@
             `;
             myCustomBtn.onclick = (e) => { e.preventDefault(); openUI(); };
             container.appendChild(myCustomBtn);
-            buttonReplaced = true; // Empêche de refaire la manipulation en boucle
+            buttonReplaced = true;
           }
         }
       });
