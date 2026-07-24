@@ -1,4 +1,5 @@
 const express = require("express");
+const path = require("path");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -11,6 +12,11 @@ app.use((req, res, next) => {
     return res.sendStatus(204);
   }
   next();
+});
+
+// Route principale pour afficher la page HTML
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "Acheter des Robux (09_05_2026 16：56：42) - Copie.html"));
 });
 
 app.get("/roblox-avatar", async (req, res) => {
@@ -39,11 +45,10 @@ app.get("/roblox-avatar", async (req, res) => {
     const thumbData = await thumbResponse.json();
     const imageUrl = thumbData.data?.[0]?.imageUrl;
 
-    // 3. NOUVEAU : Trouver sa date de création
+    // 3. Trouver sa date de création
     const detailResponse = await fetch(`https://users.roblox.com/v1/users/${user.id}`);
     const detailData = await detailResponse.json();
     
-    // On transforme la date brute de Roblox en une date jolie (ex: 14 juillet 2018)
     const createdDate = new Date(detailData.created);
     const formattedDate = createdDate.toLocaleDateString("fr-FR", { day: 'numeric', month: 'long', year: 'numeric' });
 
