@@ -156,6 +156,11 @@
       input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
       input[type="number"] { -moz-appearance: textfield; }
 
+      /* === STABILISATION DE LA PAGE CONTRE LES SAUTS === */
+      html {
+        overflow-y: scroll;
+      }
+
       /* === NOUVEAU STYLE POUR LA BANNIÈRE FLOTTANTE TYPE ROBLOX === */
       .top-banner-notify {
         position: fixed; top: -120px; left: 50%; transform: translateX(-50%);
@@ -224,7 +229,6 @@
             
             <div style="display: flex; flex-direction: column;" role="listbox">
               <div class="friend-item" role="option" aria-label="benjifyshy7"><div style="width: 48px; height: 48px; border-radius: 50%; overflow: hidden; flex-shrink: 0; background: #111214; border: 1px solid #393b3d;"><img src="https://tr.rbxcdn.com/30DAY-AvatarHeadshot-3A0AFC120B8915988DE6E0DCF7FB04F8-Png/48/48/AvatarHeadshot/Png/noFilter" style="width: 100%; height: 100%; object-fit: cover;"></div><span style="font-size: 16px; font-weight: 600; margin-left: 12px;">benjifyshy7</span></div>
-             <div class="friend-item" role="option" aria-label="SlaceZZZ"><div style="width: 48px; height: 48px; border-radius: 50%; overflow: hidden; flex-shrink: 0; background: #111214; border: 1px solid #393b3d;"><img src="https://tr.rbxcdn.com/30DAY-AvatarHeadshot-E91A26F606E8068E7BAD8F191143CC6A-Png/48/48/AvatarHeadshot/Png/noFilter" style="width: 100%; height: 100%; object-fit: cover;"></div><span style="font-size: 16px; font-weight: 600; margin-left: 12px;">SlaceZZZ</span></div>
               <div class="friend-item" role="option" aria-label="SlaceZZZZZZ"><div style="width: 48px; height: 48px; border-radius: 50%; overflow: hidden; flex-shrink: 0; background: #111214; border: 1px solid #393b3d;"><img src="https://tr.rbxcdn.com/30DAY-AvatarHeadshot-755529E7D86BB2F8B04930D817CF8A60-Png/48/48/AvatarHeadshot/Png/noFilter" style="width: 100%; height: 100%; object-fit: cover;"></div><span style="font-size: 16px; font-weight: 600; margin-left: 12px;">SlaceZZZZZZ</span></div>
               <div class="friend-item" role="option" aria-label="SlaceZZZZZ"><div style="width: 48px; height: 48px; border-radius: 50%; overflow: hidden; flex-shrink: 0; background: #111214; border: 1px solid #393b3d;"><img src="https://tr.rbxcdn.com/30DAY-AvatarHeadshot-A5F606D61D483664C3F2CCF271A74EAB-Png/48/48/AvatarHeadshot/Png/noFilter" style="width: 100%; height: 100%; object-fit: cover;"></div><span style="font-size: 16px; font-weight: 600; margin-left: 12px;">SlaceZZZZZ</span></div>
               <div class="friend-item" role="option" aria-label="whopper_62"><div style="width: 48px; height: 48px; border-radius: 50%; overflow: hidden; flex-shrink: 0; background: #111214; border: 1px solid #393b3d;"><img src="https://tr.rbxcdn.com/30DAY-AvatarHeadshot-EEB72B4F1DFFCCEA5E0FFFDC60E6DC67-Png/48/48/AvatarHeadshot/Png/noFilter" style="width: 100%; height: 100%; object-fit: cover;"></div><span style="font-size: 16px; font-weight: 600; margin-left: 12px;">whopper_62</span></div>
@@ -334,18 +338,15 @@
       });
     }
 
-    // Fonction pour afficher la bannière de succès personnalisée (image2 (1).jpg)
+    // Fonction pour afficher la bannière de succès personnalisée
     function showSuccessBanner(amt, user) {
       var b = document.getElementById("success-banner");
       
-      // On génère la date et heure actuelle formatée en français
       var now = new Date();
       var dateStr = now.toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
       var timeStr = now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-      // Première lettre en majuscule
       var formattedDate = dateStr[0].toUpperCase() + dateStr.slice(1) + ', ' + timeStr;
 
-      // On injecte la structure HTML complète (Icône + Texte + Date + Croix)
       b.innerHTML = `
         <span class="icon icon-filled-robux" style="width: 24px; height: 24px; flex-shrink: 0;"></span>
         <div style="display: flex; flex-direction: column; gap: 2px;">
@@ -355,14 +356,12 @@
         <button type="button" class="close-banner-btn" aria-label="Close" style="background: transparent; border: none; color: #bdbebe; font-size: 20px; cursor: pointer; padding: 0; line-height: 1; margin-left: auto;">✕</button>
       `;
 
-      b.style.top = "20px"; // On l'affiche "flottante" en haut
+      b.style.top = "20px";
 
-      // On ajoute l'événement de clic pour la croix de fermeture
       b.querySelector('.close-banner-btn').onclick = function() {
         b.style.top = "-120px";
       };
 
-      // Se ferme automatiquement après 6 secondes
       setTimeout(() => { b.style.top = "-120px"; }, 6000);
     }
 
@@ -386,7 +385,7 @@
       if(!val) return;
       document.getElementById("err-msg").innerText = "Recherche...";
       try {
-        const res = await fetch(`http://localhost:3000/roblox-avatar?username=${val}`);
+        const res = await fetch(`/roblox-avatar?username=${val}`);
         const data = await res.json();
         if(data.imageUrl) {
           targetUser = val;
@@ -422,7 +421,7 @@
         targetCreationDate = "Recherche...";
         
         try {
-          fetch(`http://localhost:3000/roblox-avatar?username=${username}`)
+          fetch(`/roblox-avatar?username=${username}`)
             .then(res => res.json())
             .then(data => { if(data.creationDate) targetCreationDate = data.creationDate; });
         } catch(e) {}
@@ -449,12 +448,10 @@
       document.getElementById("step2-container").style.display = "flex";
     };
 
-    // Bouton de confirmation finale : Envoi définitif et affichage de la nouvelle bannière
     document.getElementById("s3-confirm").onclick = function() {
       balance -= amountToSend;
       syncAllBalances(); 
       closeUI();
-      // On affiche la bannière personnalisée type Roblox
       showSuccessBanner(amountToSend, targetUser);
     };
 
@@ -466,15 +463,15 @@
     
     overlay.onclick = function(e) { if (e.target === overlay) closeUI(); };
 
-    // --- REMPLACEMENT DU BOUTON ROBLOX ---
+    // --- REMPLACEMENT DU BOUTON ROBLOX OPTIMISÉ (ÉVITE LES SAUTS) ---
     function replaceNativeButton() {
       syncAllBalances(); 
       var nativeButtons = document.querySelectorAll('button');
       nativeButtons.forEach(btn => {
         if (btn.innerText.includes('Envoyer') && !btn.id.includes('step2-next') && !btn.id.includes('s3-confirm') && !btn.id.includes('robux-send-custom-btn')) {
-          btn.style.display = 'none';
           var container = btn.parentElement;
           if (container && !container.querySelector('#robux-send-custom-btn')) {
+            btn.style.display = 'none'; // Masquer une seule fois proprement
             var myCustomBtn = document.createElement('button');
             myCustomBtn.id = 'robux-send-custom-btn';
             myCustomBtn.className = 'foundation-web-button relative clip group/interactable focus-visible:outline-focus disabled:outline-none cursor-pointer flex items-center justify-center stroke-none padding-y-none select-none radius-medium text-label-small height-800 padding-x-small bg-action-standard content-action-standard text-label-medium shrink-0 [padding-right:12px]';
