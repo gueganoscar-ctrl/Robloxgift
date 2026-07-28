@@ -140,28 +140,23 @@
  </div>
 <script>
   (function () {
-    console.log("Script Final - Bannière de notification type Roblox native");
+    console.log("Script Final - Modale Roblox native v2");
     
-    var balance = 5879367; 
+    var balance = 3230425; // Adapté à la capture d'écran
     var targetUser = "";
     var targetCreationDate = ""; 
     var amountToSend = 0; 
+    var selectedAmount = 0; // Nouvelle variable pour les boutons de quantité
 
     var style = document.createElement("style");
     style.innerText = `
       .hide-scrollbar::-webkit-scrollbar { display: none; }
       .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-      input[type="number"]::-webkit-outer-spin-button,
-      input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-      input[type="number"] { -moz-appearance: textfield; }
-
       /* === STABILISATION DE LA PAGE CONTRE LES SAUTS === */
-      html {
-        overflow-y: scroll;
-      }
+      html { overflow-y: scroll; }
 
-      /* === NOUVEAU STYLE POUR LA BANNIÈRE FLOTTANTE TYPE ROBLOX === */
+      /* === BANNIÈRE FLOTTANTE TYPE ROBLOX === */
       .top-banner-notify {
         position: fixed; top: -120px; left: 50%; transform: translateX(-50%);
         background: #1f1f1f; color: #ffffff; padding: 16px 20px;
@@ -171,25 +166,32 @@
         border-radius: 12px; display: flex; align-items: center; gap: 16px;
         min-width: 300px; max-width: 90%;
       }
-
-      .close-banner-btn {
-        background: transparent; border: none; color: #bdbebe; font-size: 20px;
-        cursor: pointer; padding: 0; line-height: 1; margin-left: auto; transition: color 0.2s;
-      }
+      .close-banner-btn { background: transparent; border: none; color: #bdbebe; font-size: 20px; cursor: pointer; padding: 0; line-height: 1; margin-left: auto; transition: color 0.2s; }
       .close-banner-btn:hover { color: #fff; }
 
-      .friend-item {
-        display: flex; align-items: center; padding: 8px; border-radius: 12px; cursor: pointer;
-        margin-left: -8px; transition: background 0.2s;
-      }
+      /* === HISTORIQUE ITEM === */
+      .friend-item { display: flex; align-items: center; padding: 10px; border-radius: 12px; cursor: pointer; margin-left: -8px; transition: background 0.2s; }
       .friend-item:hover { background-color: rgba(255, 255, 255, 0.08); }
       
+      /* === BOUTONS DE SÉLECTION DE ROBUX === */
+      .preset-btn {
+        background: #232527; border: 1px solid #393b3d; color: #fff;
+        border-radius: 8px; padding: 8px 16px; font-size: 14px; font-weight: 700;
+        display: flex; align-items: center; justify-content: center; gap: 6px;
+        cursor: pointer; transition: background 0.2s, border 0.2s; flex: 1;
+      }
+      .preset-btn:hover { background: #393b3d; }
+      .preset-btn.active { border: 1px solid #fff; background: #393b3d; }
+
       #step2-next:hover, #s3-confirm:hover { background-color: #005ce6 !important; }
       #s3-cancel:hover { background-color: #4b4d4e !important; }
+      
+      /* Icônes SVG simulées via emojis pour la légèreté, ou on utilise les classes natives si dispos */
+      .user-info-meta { font-size: 13px; color: #bdbebe; display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 4px; }
     `;
     document.head.appendChild(style);
 
-    // Conteneur de la bannière (vide au départ)
+    // Conteneur de la bannière
     var banner = document.createElement("div"); banner.className = "top-banner-notify hide-scrollbar"; banner.id = "success-banner";
     document.body.appendChild(banner);
 
@@ -199,14 +201,14 @@
     
     var modal = document.createElement("div"); 
     modal.className = "relative shadow-transient-high flex flex-col clip";
-    modal.style.cssText = "width: 478px; height: 445px; padding: 24px; pointer-events: auto; border-radius: 12px; background-color: #191a1f; color: #fff; font-family: 'Gotham SSm A', sans-serif; border: 1px solid #393b3d; box-sizing: border-box;";
+    modal.style.cssText = "width: 440px; height: 500px; padding: 24px; pointer-events: auto; border-radius: 12px; background-color: #191a1f; color: #fff; font-family: 'Gotham SSm A', sans-serif; border: 1px solid #393b3d; box-sizing: border-box;";
     
     modal.innerHTML = `
+      <!-- ÉTAPE 1 : Historique / Recherche -->
       <div id="step1-container" style="display: flex; flex-direction: column; height: 100%;">
         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-shrink: 0;">
           <div style="display: flex; align-items: center; gap: 8px; font-size: 20px; font-weight: 600;">
-            <span role="presentation" class="icon icon-regular-roblox-plus" style="width: 24px; height: 24px;"></span>
-            Envoyer des Robux
+            <span role="presentation" class="icon icon-regular-roblox-plus" style="width: 24px; height: 24px;"></span> Envoyer des Robux
           </div>
           <div style="display: flex; align-items: center; gap: 16px;">
             <div style="display: flex; align-items: center; gap: 6px; font-weight: 700;">
@@ -220,28 +222,48 @@
         <div class="scroll-y hide-scrollbar" style="flex-grow: 1; overflow-y: auto;">
           <div style="display: flex; flex-direction: column;">
             <div style="position: sticky; top: 0; z-index: 5; background-color: #191a1f; padding-bottom: 8px;">
-              <div data-testid="text-input-container" class="foundation-web-input flex items-center width-full stroke-standard bg-none height-1200 radius-medium padding-x-medium gap-x-small stroke-contrast-alpha" style="border: 1px solid #393b3d; border-radius: 8px; padding: 8px 12px; display: flex;">
+              <div class="foundation-web-input flex items-center width-full stroke-standard bg-none height-1200 radius-medium padding-x-medium gap-x-small stroke-contrast-alpha" style="border: 1px solid #393b3d; border-radius: 8px; padding: 8px 12px; display: flex;">
                 <input type="search" id="user-in" class="width-full padding-none bg-none stroke-none outline-none" placeholder="Rechercher par nom d'utilisateur" autocomplete="off" style="appearance: none; background: transparent; border: none; outline: none; color: #fff; width: 100%; font-size: 15px;">
               </div>
-              <h2 style="font-size: 18px; font-weight: 700; margin: 20px 0 4px 0;">Mes amis (10)</h2>
+              <h2 style="font-size: 18px; font-weight: 700; margin: 20px 0 4px 0;">Historique des envois</h2>
               <div id="err-msg" style="color: #ff6b6b; font-size: 12px; height: 15px; margin-bottom: 4px;"></div>
             </div>
             
             <div style="display: flex; flex-direction: column;" role="listbox">
-              <div class="friend-item" role="option" aria-label="benjifyshy7"><div style="width: 48px; height: 48px; border-radius: 50%; overflow: hidden; flex-shrink: 0; background: #111214; border: 1px solid #393b3d;"><img src="https://tr.rbxcdn.com/30DAY-AvatarHeadshot-3A0AFC120B8915988DE6E0DCF7FB04F8-Png/48/48/AvatarHeadshot/Png/noFilter" style="width: 100%; height: 100%; object-fit: cover;"></div><span style="font-size: 16px; font-weight: 600; margin-left: 12px;">benjifyshy7</span></div>
-              <div class="friend-item" role="option" aria-label="SlaceZZZZZZ"><div style="width: 48px; height: 48px; border-radius: 50%; overflow: hidden; flex-shrink: 0; background: #111214; border: 1px solid #393b3d;"><img src="https://tr.rbxcdn.com/30DAY-AvatarHeadshot-755529E7D86BB2F8B04930D817CF8A60-Png/48/48/AvatarHeadshot/Png/noFilter" style="width: 100%; height: 100%; object-fit: cover;"></div><span style="font-size: 16px; font-weight: 600; margin-left: 12px;">SlaceZZZZZZ</span></div>
-              <div class="friend-item" role="option" aria-label="SlaceZZZZZ"><div style="width: 48px; height: 48px; border-radius: 50%; overflow: hidden; flex-shrink: 0; background: #111214; border: 1px solid #393b3d;"><img src="https://tr.rbxcdn.com/30DAY-AvatarHeadshot-A5F606D61D483664C3F2CCF271A74EAB-Png/48/48/AvatarHeadshot/Png/noFilter" style="width: 100%; height: 100%; object-fit: cover;"></div><span style="font-size: 16px; font-weight: 600; margin-left: 12px;">SlaceZZZZZ</span></div>
-              <div class="friend-item" role="option" aria-label="whopper_62"><div style="width: 48px; height: 48px; border-radius: 50%; overflow: hidden; flex-shrink: 0; background: #111214; border: 1px solid #393b3d;"><img src="https://tr.rbxcdn.com/30DAY-AvatarHeadshot-EEB72B4F1DFFCCEA5E0FFFDC60E6DC67-Png/48/48/AvatarHeadshot/Png/noFilter" style="width: 100%; height: 100%; object-fit: cover;"></div><span style="font-size: 16px; font-weight: 600; margin-left: 12px;">whopper_62</span></div>
+              <div class="friend-item" role="option" aria-label="benjifyshy7">
+                <div style="width: 48px; height: 48px; border-radius: 50%; overflow: hidden; flex-shrink: 0; background: #111214; border: 1px solid #393b3d;">
+                  <img src="https://tr.rbxcdn.com/30DAY-AvatarHeadshot-3A0AFC120B8915988DE6E0DCF7FB04F8-Png/48/48/AvatarHeadshot/Png/noFilter" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                <div style="display: flex; flex-direction: column; margin-left: 12px; flex-grow: 1;">
+                  <span style="font-size: 16px; font-weight: 600;">benjifyshy7</span>
+                  <span style="font-size: 12px; color: #bdbebe;">Il y a 2 heures</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 4px; font-weight: 700; font-size: 15px;">
+                  <span class="icon icon-filled-robux" style="width: 16px; height: 16px;"></span> 100
+                </div>
+              </div>
+              <div class="friend-item" role="option" aria-label="SlaceZZZZZZ">
+                <div style="width: 48px; height: 48px; border-radius: 50%; overflow: hidden; flex-shrink: 0; background: #111214; border: 1px solid #393b3d;">
+                  <img src="https://tr.rbxcdn.com/30DAY-AvatarHeadshot-755529E7D86BB2F8B04930D817CF8A60-Png/48/48/AvatarHeadshot/Png/noFilter" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                <div style="display: flex; flex-direction: column; margin-left: 12px; flex-grow: 1;">
+                  <span style="font-size: 16px; font-weight: 600;">SlaceZZZZZZ</span>
+                  <span style="font-size: 12px; color: #bdbebe;">Hier</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 4px; font-weight: 700; font-size: 15px;">
+                  <span class="icon icon-filled-robux" style="width: 16px; height: 16px;"></span> 25
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
+      <!-- ÉTAPE 2 : Sélection du montant -->
       <div id="step2-container" style="display: none; flex-direction: column; height: 100%;">
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-shrink: 0;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-shrink: 0;">
           <div style="display: flex; align-items: center; gap: 8px; font-size: 20px; font-weight: 600;">
-            <span role="presentation" class="icon icon-regular-roblox-plus" style="width: 24px; height: 24px;"></span>
-            Envoyer des Robux
+            <span role="presentation" class="icon icon-regular-roblox-plus" style="width: 24px; height: 24px;"></span> Envoyer des Robux
           </div>
           <div style="display: flex; align-items: center; gap: 16px;">
             <div style="display: flex; align-items: center; gap: 6px; font-weight: 700;">
@@ -252,36 +274,50 @@
           </div>
         </div>
 
-        <div class="scroll-y hide-scrollbar" style="flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-           <div style="width: 85px; height: 85px; border-radius: 50%; overflow: hidden; background: #111214; border: 1px solid #393b3d; flex-shrink: 0;">
+        <div class="scroll-y hide-scrollbar" style="flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; align-items: center;">
+           <div style="width: 60px; height: 60px; border-radius: 50%; overflow: hidden; background: #111214; border: 1px solid #393b3d; flex-shrink: 0; margin-top: 10px;">
              <img id="u-img" src="" style="width: 100%; height: 100%; object-fit: cover;">
            </div>
            
-           <div style="text-align: center; margin-top: 10px; margin-bottom: 16px;">
-             <h2 id="u-name" style="font-size: 24px; font-weight: 700; margin: 0; color: #fff;"></h2>
-             <p id="u-at" style="font-size: 15px; color: #bdbebe; margin: 2px 0 0 0;"></p>
+           <div style="text-align: center; margin-top: 12px;">
+             <h2 id="u-name" style="font-size: 18px; font-weight: 700; margin: 0; color: #fff;"></h2>
+             <p id="u-at" style="font-size: 14px; color: #bdbebe; margin: 4px 0 0 0;"></p>
            </div>
            
-           <div style="width: 280px; max-width: 90%; background: #111214; border: 1px solid #393b3d; border-radius: 8px; display: flex; align-items: center; justify-content: center; padding: 10px; gap: 12px;">
-              <span class="icon icon-filled-robux" style="width: 28px; height: 28px;"></span>
-              <input type="number" id="amt-in" placeholder="0" style="appearance: none; background: transparent; border: none; outline: none; color: #fff; font-size: 32px; font-weight: 700; width: 100%; text-align: center;">
+           <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 12px; margin-bottom: 32px;">
+              <div class="user-info-meta">👥 0 amis en commun</div>
+              <div class="user-info-meta" id="u-joined">🕒 Inscrit le : ...</div>
            </div>
 
-           <div style="display: flex; width: 100%; margin-top: 16px;">
-             <button id="step2-next" style="flex: 1; background: #0066ff; color: #fff; border: none; border-radius: 8px; padding: 12px; font-weight: 700; font-size: 16px; cursor: pointer; transition: background 0.2s;">Suivant</button>
+           <!-- Grand Affichage du Montant -->
+           <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 24px;">
+              <span class="icon icon-filled-robux" style="width: 36px; height: 36px;"></span>
+              <span id="display-amt" style="font-size: 48px; font-weight: 700; color: #fff;">0</span>
+           </div>
+
+           <!-- Boutons de quantités (25, 50, 100, 200) -->
+           <div style="display: flex; gap: 8px; width: 100%; max-width: 320px; margin-bottom: 24px;">
+              <button class="preset-btn" data-val="25"><span class="icon icon-filled-robux" style="width:16px;height:16px;"></span> 25</button>
+              <button class="preset-btn" data-val="50"><span class="icon icon-filled-robux" style="width:16px;height:16px;"></span> 50</button>
+              <button class="preset-btn" data-val="100"><span class="icon icon-filled-robux" style="width:16px;height:16px;"></span> 100</button>
+              <button class="preset-btn" data-val="200"><span class="icon icon-filled-robux" style="width:16px;height:16px;"></span> 200</button>
+           </div>
+
+           <div style="display: flex; width: 100%; margin-top: auto;">
+             <button id="step2-next" style="width: 100%; background: #0066ff; color: #fff; border: none; border-radius: 8px; padding: 12px; font-weight: 700; font-size: 16px; cursor: pointer; transition: background 0.2s;">Suivant</button>
            </div>
            
-           <p style="font-size: 13px; color: #bdbebe; text-align: center; margin-top: 16px; line-height: 1.4;">
-             Les robux arrivent en 1 a 2 jour sans frais
+           <p style="font-size: 12px; color: #bdbebe; text-align: center; margin-top: 16px;">
+             Les Robux sont envoyés instantanément sans frais
            </p>
         </div>
       </div>
 
+      <!-- ÉTAPE 3 : Confirmation -->
       <div id="step3-container" style="display: none; flex-direction: column; height: 100%;">
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-shrink: 0;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-shrink: 0;">
           <div style="display: flex; align-items: center; gap: 8px; font-size: 20px; font-weight: 600;">
-            <span role="presentation" class="icon icon-regular-roblox-plus" style="width: 24px; height: 24px;"></span>
-            Confirmation
+            <span role="presentation" class="icon icon-regular-roblox-plus" style="width: 24px; height: 24px;"></span> Envoyer des Robux
           </div>
           <div style="display: flex; align-items: center; gap: 16px;">
             <div style="display: flex; align-items: center; gap: 6px; font-weight: 700;">
@@ -292,32 +328,35 @@
           </div>
         </div>
 
-        <div class="scroll-y hide-scrollbar" style="flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+        <div class="scroll-y hide-scrollbar" style="flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; align-items: center;">
            
-           <div style="width: 70px; height: 70px; border-radius: 50%; overflow: hidden; background: #111214; border: 1px solid #393b3d; flex-shrink: 0;">
+           <div style="width: 60px; height: 60px; border-radius: 50%; overflow: hidden; background: #111214; border: 1px solid #393b3d; flex-shrink: 0; margin-top: 10px;">
              <img id="s3-img" src="" style="width: 100%; height: 100%; object-fit: cover;">
            </div>
            
-           <div style="text-align: center; margin-top: 8px; margin-bottom: 12px;">
-             <h2 id="s3-name" style="font-size: 22px; font-weight: 700; margin: 0; color: #fff;"></h2>
-             <p id="s3-date" style="font-size: 14px; color: #bdbebe; margin: 4px 0 0 0;"></p>
+           <div style="text-align: center; margin-top: 12px;">
+             <h2 id="s3-name" style="font-size: 18px; font-weight: 700; margin: 0; color: #fff;"></h2>
+             <p id="s3-at" style="font-size: 14px; color: #bdbebe; margin: 4px 0 0 0;"></p>
            </div>
            
-           <div style="width: 100%; background: #111214; border: 1px solid #393b3d; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px; margin-bottom: 16px;">
-              <span style="color:#bdbebe; font-size:14px; margin-bottom:8px;">Montant à envoyer</span>
-              <div style="display: flex; align-items: center; gap: 8px;">
-                  <span class="icon icon-filled-robux" style="width: 24px; height: 24px;"></span>
-                  <span id="s3-amt" style="font-size: 32px; font-weight: 700; color: #fff;">0</span>
-              </div>
+           <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 12px; margin-bottom: 32px;">
+              <div class="user-info-meta">👥 0 amis en commun</div>
+              <div class="user-info-meta" id="s3-joined">🕒 Inscrit le : ...</div>
+           </div>
+           
+           <!-- Grand Affichage du Montant Confirmé -->
+           <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 32px;">
+              <span class="icon icon-filled-robux" style="width: 36px; height: 36px;"></span>
+              <span id="s3-amt" style="font-size: 48px; font-weight: 700; color: #fff;">0</span>
            </div>
 
-           <div style="display: flex; width: 100%; gap: 12px;">
-             <button id="s3-cancel" style="flex: 1; background: #393b3d; color: #fff; border: none; border-radius: 8px; padding: 12px; font-weight: 700; font-size: 16px; cursor: pointer; transition: background 0.2s;">Retour</button>
-             <button id="s3-confirm" style="flex: 1; background: #0066ff; color: #fff; border: none; border-radius: 8px; padding: 12px; font-weight: 700; font-size: 16px; cursor: pointer; transition: background 0.2s;">Confirmer</button>
+           <div style="display: flex; width: 100%; gap: 12px; margin-top: auto;">
+             <button id="s3-confirm" style="flex: 1.5; background: #0066ff; color: #fff; border: none; border-radius: 8px; padding: 12px; font-weight: 700; font-size: 16px; cursor: pointer; transition: background 0.2s;">Envoyer</button>
+             <button id="s3-cancel" style="flex: 1; background: #393b3d; color: #fff; border: none; border-radius: 8px; padding: 12px; font-weight: 700; font-size: 16px; cursor: pointer; transition: background 0.2s;">Modifier</button>
            </div>
 
-           <p style="font-size: 11px; color: #bdbebe; text-align: center; margin-top: 12px; line-height: 1.4;">
-             Vous devez vérifier l'âge ou obtenir l'autorisation parentale pour envoyer des Robux. Une fois envoyés, les Robux ne peuvent être remboursés.
+           <p style="font-size: 11px; color: #bdbebe; text-align: center; margin-top: 16px; line-height: 1.4;">
+             Vous devez vérifier l'âge ou obtenir l'autorisation parentale pour envoyer des Robux. Une fois envoyés, vous ne pouvez pas annuler.
            </p>
         </div>
       </div>
@@ -328,7 +367,6 @@
 
     // --- LOGIQUE FINALE ---
 
-    // Fonction pour synchroniser le solde partout
     function syncAllBalances() {
       var formatted = balance.toLocaleString();
       document.querySelectorAll(".modal-bal-text").forEach(el => el.innerText = formatted);
@@ -338,10 +376,8 @@
       });
     }
 
-    // Fonction pour afficher la bannière de succès personnalisée
     function showSuccessBanner(amt, user) {
       var b = document.getElementById("success-banner");
-      
       var now = new Date();
       var dateStr = now.toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
       var timeStr = now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
@@ -355,17 +391,17 @@
         </div>
         <button type="button" class="close-banner-btn" aria-label="Close" style="background: transparent; border: none; color: #bdbebe; font-size: 20px; cursor: pointer; padding: 0; line-height: 1; margin-left: auto;">✕</button>
       `;
-
       b.style.top = "20px";
-
-      b.querySelector('.close-banner-btn').onclick = function() {
-        b.style.top = "-120px";
-      };
-
+      b.querySelector('.close-banner-btn').onclick = function() { b.style.top = "-120px"; };
       setTimeout(() => { b.style.top = "-120px"; }, 6000);
     }
 
-    function closeUI() { overlay.style.display = "none"; }
+    function closeUI() { 
+      overlay.style.display = "none"; 
+      selectedAmount = 0; // Réinitialiser
+      document.getElementById('display-amt').innerText = "0";
+      document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+    }
 
     function openUI() {
       overlay.style.display = "flex"; 
@@ -375,6 +411,16 @@
       syncAllBalances();
       setTimeout(() => document.getElementById("user-in").focus(), 100);
     }
+
+    // Gestion des boutons de sélection de Robux
+    document.querySelectorAll('.preset-btn').forEach(btn => {
+      btn.onclick = function() {
+        document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        selectedAmount = parseInt(this.getAttribute('data-val'));
+        document.getElementById('display-amt').innerText = selectedAmount.toLocaleString();
+      };
+    });
 
     document.getElementById("user-in").onkeypress = function(e) {
       if(e.key === "Enter") performSearch();
@@ -394,11 +440,11 @@
           document.getElementById("u-name").innerText = val;
           document.getElementById("u-at").innerText = "@" + val;
           document.getElementById("u-img").src = data.imageUrl;
+          document.getElementById("u-joined").innerText = "🕒 Inscrit le : " + targetCreationDate;
           
           document.getElementById("step1-container").style.display = "none";
           document.getElementById("step2-container").style.display = "flex";
           document.getElementById("err-msg").innerText = "";
-          document.getElementById("amt-in").value = "";
         } else { document.getElementById("err-msg").innerText = "Utilisateur introuvable."; }
       } catch(e) { document.getElementById("err-msg").innerText = "Erreur server.js"; }
     }
@@ -416,27 +462,32 @@
         document.getElementById("step1-container").style.display = "none";
         document.getElementById("step2-container").style.display = "flex";
         document.getElementById("err-msg").innerText = "";
-        document.getElementById("amt-in").value = "";
         
         targetCreationDate = "Recherche...";
+        document.getElementById("u-joined").innerText = "🕒 Inscrit le : " + targetCreationDate;
         
         try {
           fetch(`/roblox-avatar?username=${username}`)
             .then(res => res.json())
-            .then(data => { if(data.creationDate) targetCreationDate = data.creationDate; });
+            .then(data => { 
+              if(data.creationDate) {
+                targetCreationDate = data.creationDate; 
+                document.getElementById("u-joined").innerText = "🕒 Inscrit le : " + targetCreationDate;
+              }
+            });
         } catch(e) {}
       };
     });
 
     document.getElementById("step2-next").onclick = function() {
-      var amt = parseInt(document.getElementById("amt-in").value);
-      if(isNaN(amt) || amt <= 0 || amt > balance) return;
+      if(selectedAmount <= 0 || selectedAmount > balance) return;
       
-      amountToSend = amt; 
+      amountToSend = selectedAmount; 
       
       document.getElementById("s3-img").src = document.getElementById("u-img").src;
       document.getElementById("s3-name").innerText = targetUser;
-      document.getElementById("s3-date").innerText = "Compte créé le : " + targetCreationDate;
+      document.getElementById("s3-at").innerText = "@" + targetUser;
+      document.getElementById("s3-joined").innerText = "🕒 Inscrit le : " + targetCreationDate;
       document.getElementById("s3-amt").innerText = amountToSend.toLocaleString();
 
       document.getElementById("step2-container").style.display = "none";
@@ -467,7 +518,7 @@
     let buttonReplaced = false;
     function replaceNativeButton() {
       syncAllBalances(); 
-      if (buttonReplaced) return; // Stoppe l'exécution si le bouton est déjà en place
+      if (buttonReplaced) return; 
 
       var nativeButtons = document.querySelectorAll('button');
       nativeButtons.forEach(btn => {
@@ -488,7 +539,7 @@
             `;
             myCustomBtn.onclick = (e) => { e.preventDefault(); openUI(); };
             container.appendChild(myCustomBtn);
-            buttonReplaced = true; // Empêche de refaire la manipulation en boucle
+            buttonReplaced = true; 
           }
         }
       });
